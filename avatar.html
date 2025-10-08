@@ -1,0 +1,2505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardiana - Asistente Digital DevSecOps</title>
+
+    <!-- Favicon optimizado para Guardiana -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='faviconGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff007f'/><stop offset='50%25' style='stop-color:%2300d4ff'/><stop offset='100%25' style='stop-color:%23ff007f'/></linearGradient></defs><circle cx='16' cy='16' r='14' fill='url(%23faviconGrad)' opacity='0.15'/><circle cx='16' cy='16' r='11' fill='none' stroke='url(%23faviconGrad)' stroke-width='2'/><circle cx='16' cy='8' r='2' fill='url(%23faviconGrad)'/><circle cx='8' cy='14' r='1.5' fill='url(%23faviconGrad)'/><circle cx='24' cy='14' r='1.5' fill='url(%23faviconGrad)'/><circle cx='11' cy='22' r='1.5' fill='url(%23faviconGrad)'/><circle cx='21' cy='22' r='1.5' fill='url(%23faviconGrad)'/><circle cx='16' cy='24' r='2' fill='url(%23faviconGrad)'/><text x='16' y='20' text-anchor='middle' fill='url(%23faviconGrad)' font-family='Arial,sans-serif' font-size='8' font-weight='bold'>AI</text></svg>" type="image/svg+xml">
+
+    <!-- Favicons adicionales para compatibilidad -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='appleGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff007f'/><stop offset='50%25' style='stop-color:%2300d4ff'/><stop offset='100%25' style='stop-color:%23ff007f'/></linearGradient></defs><rect width='180' height='180' rx='20' fill='%23000'/><circle cx='90' cy='90' r='70' fill='url(%23appleGrad)' opacity='0.15'/><circle cx='90' cy='90' r='55' fill='none' stroke='url(%23appleGrad)' stroke-width='4'/><circle cx='90' cy='45' r='8' fill='url(%23appleGrad)'/><circle cx='45' cy='70' r='6' fill='url(%23appleGrad)'/><circle cx='135' cy='70' r='6' fill='url(%23appleGrad)'/><circle cx='60' cy='115' r='6' fill='url(%23appleGrad)'/><circle cx='120' cy='115' r='6' fill='url(%23appleGrad)'/><circle cx='90' cy='135' r='8' fill='url(%23appleGrad)'/><text x='90' y='105' text-anchor='middle' fill='url(%23appleGrad)' font-family='Arial,sans-serif' font-size='24' font-weight='bold'>AI</text></svg>">
+
+    <!-- Meta tags para PWA -->
+    <meta name="theme-color" content="#ff007f">
+    <meta name="msapplication-TileColor" content="#ff007f">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 25%, #0a1a2a 50%, #2a0a1a 75%, #0a0a0a 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.6), 0 0 40px rgba(255, 0, 127, 0.1), 0 0 80px rgba(0, 212, 255, 0.05);
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes logoFloat {
+            from {
+                transform: translateY(0px) rotate(0deg);
+            }
+            to {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        @keyframes logoGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(255, 0, 127, 0.8)) drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
+            }
+        }
+
+        @keyframes textShimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(255, 0, 127, 0.2) 0%, rgba(0, 212, 255, 0.15) 50%, rgba(255, 0, 127, 0.1) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 0, 127, 0.15);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .guardiana-logo {
+            animation: logoFloat 3s ease-in-out infinite alternate, logoGlow 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.5));
+            transition: transform 0.3s ease;
+        }
+
+        .guardiana-logo:hover {
+            transform: scale(1.1);
+            animation-duration: 1s;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff007f 0%, #00d4ff 50%, #ff007f 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s linear infinite;
+            text-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+        }
+
+        .logo-text .subtitle {
+            display: block;
+            font-size: 0.7em;
+            opacity: 0.9;
+            font-weight: 400;
+            margin-top: -2px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 0.95em;
+            margin: 0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 70% 30%;
+            gap: 24px;
+            padding: 18px 24px 24px;
+            min-height: calc(100vh - 140px);
+            align-items: start;
+        }
+
+        .video-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .video-container {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a1a2a 100%);
+            border: 3px solid transparent;
+            border-radius: 22px;
+            width: 100%;
+            height: 65vh;
+            max-height: 650px;
+            min-height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background-image:
+                linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a1a2a 100%),
+                linear-gradient(135deg,
+                    rgba(255, 0, 127, 0.7) 0%,
+                    rgba(0, 212, 255, 0.5) 50%,
+                    rgba(255, 0, 127, 0.7) 100%
+                );
+            background-origin: padding-box, border-box;
+            background-clip: padding-box, border-box;
+            box-shadow:
+                0 12px 48px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(255, 0, 127, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .video-container:hover {
+            background-image:
+                linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a1a2a 100%),
+                linear-gradient(135deg,
+                    rgba(255, 0, 127, 0.9) 0%,
+                    rgba(0, 212, 255, 0.7) 50%,
+                    rgba(255, 0, 127, 0.9) 100%
+                );
+            box-shadow:
+                0 16px 64px rgba(0, 0, 0, 0.7),
+                0 0 60px rgba(255, 0, 127, 0.4),
+                0 0 0 1px rgba(0, 212, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Vignette overlay casi imperceptible */
+        .video-vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(0, 0, 0, 0) 60%,
+                rgba(10, 5, 15, 0.05) 75%,
+                rgba(15, 10, 25, 0.1) 88%,
+                rgba(10, 10, 26, 0.2) 96%,
+                rgba(8, 8, 20, 0.3) 100%
+            );
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 18px;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Vignette con toques de color de marca en las esquinas */
+        .video-vignette::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                circle at top left,
+                rgba(255, 0, 127, 0.08) 0%,
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at bottom right,
+                rgba(0, 212, 255, 0.08) 0%,
+                transparent 30%
+            );
+            border-radius: 18px;
+            opacity: 0.5;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        #displayVideo, #videoCanvas, #remoteVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+        
+        /* Estilos para controles de filtro de video */
+        .video-filter-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 22px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .video-filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .video-filter-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: rgba(255, 0, 127, 0.6);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+        }
+
+        .video-filter-btn.active {
+            background: rgba(255, 0, 127, 0.9);
+            border-color: rgba(255, 0, 127, 1);
+            box-shadow: 0 4px 16px rgba(255, 0, 127, 0.4);
+        }
+
+        .video-filter-btn.active:hover {
+            background: rgba(255, 0, 127, 1);
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .controls-section {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            height: fit-content;
+            position: static;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            border-radius: 14px;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 0, 127, 0.1);
+        }
+
+        .status-card h3 {
+            color: #ffffff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: #22c55e;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+            margin: 0 -8px;
+            padding: 12px 8px;
+            border-radius: 8px;
+        }
+
+        .status-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .status-value {
+            color: #ffffff;
+            font-weight: 600;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            background: rgba(255, 0, 127, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 0, 127, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            font-size: 0.9em;
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        button:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2a2a3e 0%, #353550 50%, #2a2a3e 100%);
+            color: white;
+            border: 1px solid rgba(255, 0, 127, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.2), 0 0 20px rgba(255, 0, 127, 0.1);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(255, 0, 127, 0.4), 0 0 40px rgba(255, 0, 127, 0.2);
+            border-color: rgba(255, 0, 127, 0.7);
+            background: linear-gradient(135deg, #353550 0%, #404060 50%, #353550 100%);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #c62828 0%, #ad1457 50%, #c62828 100%);
+            color: white;
+            border: 1px solid rgba(198, 40, 40, 0.4);
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3), 0 0 15px rgba(198, 40, 40, 0.1);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(198, 40, 40, 0.4), 0 0 30px rgba(198, 40, 40, 0.2);
+            border-color: rgba(198, 40, 40, 0.6);
+            background: linear-gradient(135deg, #d32f2f 0%, #c2185b 50%, #d32f2f 100%);
+        }
+
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #16a34a;
+        }
+
+        .task-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 14px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .task-section h3 {
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        /* Tabs para modos de entrada */
+        .input-mode-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 8px 16px;
+            background: rgba(42, 42, 62, 0.4);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 7px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.9em;
+        }
+
+        .tab-button.active {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.6);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3), 0 0 15px rgba(0, 212, 255, 0.1);
+        }
+
+        .tab-button:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(42, 42, 62, 0.6);
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+        }
+
+        /* Panel de contenido para cada modo */
+        .input-panel {
+            display: none;
+        }
+
+        .input-panel.active {
+            display: block;
+        }
+
+        /* Estilos para el modo audio */
+        .audio-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 0, 127, 0.4);
+            background: linear-gradient(135deg, #2a2a3e 0%, #353550 50%, #2a2a3e 100%);
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(255, 0, 127, 0.2);
+        }
+
+        .record-button:hover:not(:disabled) {
+            transform: scale(1.08);
+            box-shadow: 0 16px 64px rgba(255, 0, 127, 0.5), 0 0 40px rgba(255, 0, 127, 0.3);
+            border-color: rgba(255, 0, 127, 0.8);
+            background: linear-gradient(135deg, #404060 0%, #505070 50%, #404060 100%);
+        }
+
+        .record-button.recording {
+            animation: pulse-record 1.5s infinite;
+            border-color: #e91e63;
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 50%, #e91e63 100%);
+        }
+
+        @keyframes pulse-record {
+            0%, 100% {
+                box-shadow: 0 8px 32px rgba(233, 30, 99, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 12px 48px rgba(233, 30, 99, 0.8);
+                transform: scale(1.02);
+            }
+        }
+
+        .record-status {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95em;
+            min-height: 20px;
+        }
+
+        .transcription-preview {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            color: #ffffff;
+            min-height: 60px;
+            font-style: italic;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .transcription-preview.empty {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 0.95em;
+            min-height: 80px;
+            color: #ffffff;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: rgba(255, 0, 127, 0.6);
+            box-shadow: 0 0 0 2px rgba(255, 0, 127, 0.2), 0 4px 20px rgba(255, 0, 127, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .conversation-section {
+            background: rgba(30, 41, 59, 0.6);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .conversation-header {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .conversation-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .conversation-collapse-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .conversation-collapsed .conversation-collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .conversation-content {
+            max-height: 180px;
+            overflow-y: auto;
+            padding: 12px;
+            transition: max-height 0.3s ease;
+        }
+
+        .conversation-collapsed .conversation-content {
+            max-height: 0;
+            padding: 0 12px;
+        }
+
+        .conversation-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .conversation-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .conversation-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 0, 127, 0.5);
+            border-radius: 3px;
+        }
+
+        .conversation-title {
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .conversation-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        .conversation-placeholder p {
+            margin: 0 0 10px 0;
+            font-size: 1em;
+        }
+
+        .conversation-placeholder small {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .conversation-entry {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .conversation-entry:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .conversation-entry.user {
+            border-left: 3px solid #0d9488; /* Teal para usuario */
+        }
+
+        .conversation-entry.assistant {
+            border-left: 3px solid #ff007f; /* Rosa para Guardiana */
+        }
+
+        .conversation-speaker {
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .conversation-speaker.user {
+            color: #14b8a6; /* Teal claro */
+        }
+
+        .conversation-speaker.assistant {
+            color: #ff40a0; /* Rosa brillante */
+        }
+
+        .conversation-message {
+            font-size: 0.95em;
+            line-height: 1.4;
+            color: #ffffff;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+        }
+
+        .conversation-time {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: right;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        /* Chips flotantes sobre el video */
+        .floating-questions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .floating-questions.active {
+            pointer-events: all;
+        }
+
+        .question-chip {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            border: 1px solid rgba(255, 0, 127, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            opacity: 0.9;
+            pointer-events: all;
+        }
+
+        .question-chip:hover {
+            background: rgba(255, 0, 127, 0.2);
+            border-color: rgba(255, 0, 127, 0.6);
+            transform: translateY(-2px);
+            opacity: 1;
+            box-shadow: 0 4px 12px rgba(255, 0, 127, 0.3);
+        }
+
+        /* Estilos para la sección de preguntas sugeridas (reducida) */
+        .suggested-questions-section {
+            background: rgba(30, 41, 59, 0.6);
+            color: #e2e8f0;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 14px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 212, 255, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .questions-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .question-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            color: #ffffff;
+            font-size: 0.9em;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .question-btn:hover:not(:disabled) {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+
+        .question-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .question-icon {
+            font-size: 1.2em;
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-text {
+            flex: 1;
+            word-wrap: break-word;
+        }
+
+        /* Estilos para header y colapso de preguntas sugeridas */
+        .suggested-questions-header {
+            padding: 12px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .suggested-questions-header:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .suggested-questions-title {
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        .suggestion-collapse-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .suggested-collapsed .suggestion-collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .suggested-questions-content {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 12px;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .suggested-collapsed .suggested-questions-content {
+            max-height: 0;
+            padding: 0 12px;
+            overflow: hidden;
+        }
+
+        .suggested-questions-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .suggested-questions-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .suggested-questions-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.5);
+            border-radius: 3px;
+        }
+
+        /* Estilos para botón flotante de audio */
+        .floating-audio-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 15;
+            width: 80px;
+            height: 120px;
+            pointer-events: none;
+        }
+
+        .floating-audio-button.active {
+            pointer-events: all;
+        }
+
+        .floating-record-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 0, 127, 0.4);
+            background: linear-gradient(135deg, #2a2a3e 0%, #353550 50%, #2a2a3e 100%);
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 10px;
+            top: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(255, 0, 127, 0.2);
+            backdrop-filter: blur(10px);
+            pointer-events: all;
+            transform: none;
+            transform-origin: center;
+        }
+
+        .floating-record-button:hover:not(:disabled) {
+            transform: none;
+            box-shadow: 0 6px 24px rgba(255, 0, 127, 0.4);
+            border-color: rgba(255, 0, 127, 0.6);
+        }
+
+        .floating-record-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .floating-record-button.recording {
+            animation: pulse-floating-record 1.5s infinite;
+            border-color: #e91e63;
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 50%, #e91e63 100%);
+        }
+
+        @keyframes pulse-floating-record {
+            0%, 100% {
+                box-shadow: 0 4px 16px rgba(233, 30, 99, 0.4);
+                transform: none;
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(233, 30, 99, 0.8);
+                transform: none;
+            }
+        }
+
+        .floating-audio-status {
+            background: transparent;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            text-align: center;
+            white-space: nowrap;
+            max-width: 80px;
+            position: absolute;
+            left: 40px;
+            top: 65px;
+            transform: translateX(-50%);
+            word-wrap: break-word;
+            line-height: 1.2;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            font-weight: 500;
+        }
+
+        .floating-transcription {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 0.7em;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            max-width: 80px;
+            word-wrap: break-word;
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.2);
+            position: absolute;
+            left: 0;
+            top: 95px;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                margin: 0;
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 16px 12px;
+            }
+
+            .logo-container {
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .guardiana-logo {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.4em;
+            }
+
+            .logo-text .subtitle {
+                font-size: 0.65em;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 16px;
+                min-height: calc(100vh - 140px);
+            }
+
+            .video-section {
+                order: 1;
+            }
+
+            .controls-section {
+                order: 2;
+                position: relative;
+                width: 100%;
+                gap: 12px;
+            }
+
+            .video-container {
+                height: 75vh;
+                min-height: 300px;
+                max-height: none;
+            }
+
+            .button-group {
+                flex-direction: row;
+                gap: 8px;
+                max-width: 100%;
+                min-width: auto;
+            }
+
+            .button-group button {
+                flex: 1;
+                min-width: auto;
+                font-size: 0.8em;
+                padding: 10px 16px;
+            }
+
+            .task-section {
+                max-width: 100%;
+                margin-bottom: 8px;
+            }
+
+            .floating-questions {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                gap: 6px;
+            }
+
+            .question-chip {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .conversation-content {
+                max-height: 150px;
+            }
+
+            .task-section h3 {
+                font-size: 0.85em;
+            }
+
+            .tab-button {
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            textarea {
+                min-height: 60px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-container {
+                gap: 8px;
+            }
+
+            .guardiana-logo {
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.3em;
+            }
+
+            .logo-text .subtitle {
+                font-size: 0.6em;
+            }
+
+            .video-container {
+                height: 50vh;
+                min-height: 250px;
+            }
+
+            .floating-questions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .question-chip {
+                max-width: 80%;
+                text-align: center;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Estado de botón procesando */
+        .btn-processing {
+            opacity: 0.8;
+            cursor: not-allowed !important;
+            position: relative;
+        }
+
+        .btn-processing::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 0, 127, 0.1);
+            border-radius: inherit;
+            animation: pulse-processing 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-processing {
+            0%, 100% {
+                opacity: 0.1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(1.02);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <svg class="guardiana-logo" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ff007f;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff007f;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Brain/AI Core -->
+                    <circle cx="30" cy="30" r="25" fill="url(#logoGradient)" opacity="0.1" filter="url(#glow)"/>
+                    <circle cx="30" cy="30" r="20" fill="none" stroke="url(#logoGradient)" stroke-width="2" opacity="0.6"/>
+
+                    <!-- Neural Network Nodes -->
+                    <circle cx="30" cy="15" r="3" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="15" cy="25" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="45" cy="25" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="20" cy="40" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="40" cy="40" r="2.5" fill="url(#logoGradient)" filter="url(#glow)"/>
+                    <circle cx="30" cy="45" r="3" fill="url(#logoGradient)" filter="url(#glow)"/>
+
+                    <!-- Neural Connections -->
+                    <path d="M30 18 L27 22 L30 26 L33 22 Z" fill="url(#logoGradient)" opacity="0.8"/>
+                    <path d="M18 25 L22 28 L26 25 L22 22 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    <path d="M42 25 L38 28 L34 25 L38 22 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    <path d="M23 37 L27 34 L30 38 L26 41 Z" fill="url(#logoGradient)" opacity="0.6"/>
+                    <path d="M37 37 L33 34 L30 38 L34 41 Z" fill="url(#logoGradient)" opacity="0.6"/>
+
+                    <!-- Central AI Symbol -->
+                    <text x="30" y="35" text-anchor="middle" fill="url(#logoGradient)" font-family="Arial, sans-serif" font-size="12" font-weight="bold" filter="url(#glow)">AI</text>
+                </svg>
+                <div class="logo-text">
+                    <h1>Guardiana</h1>
+                    <span class="subtitle">Asistente Virtual</span>
+                </div>
+            </div>
+            <p>Especialista en DevSecOps - Indra Colombia</p>
+        </div>
+
+        <div class="main-content">
+            <div class="video-section">
+                <div class="video-container">
+                    <!-- Video original (oculto, usado como fuente) -->
+                    <video id="remoteVideo" autoplay playsinline muted="false" style="display: none;"></video>
+                    
+                    <!-- Canvas para procesamiento de chroma key -->
+                    <canvas id="videoCanvas" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px; display: none;"></canvas>
+                    
+                    <!-- Video mostrado (fallback o modo original) -->
+                    <video id="displayVideo" autoplay playsinline muted="false" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px; display: none;"></video>
+                    
+                    <div id="videoPlaceholder" style="position: absolute; text-align: center; color: #94a3b8;">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                            <line x1="7" y1="2" x2="7" y2="22"></line>
+                            <line x1="17" y1="2" x2="17" y2="22"></line>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <line x1="2" y1="7" x2="7" y2="7"></line>
+                            <line x1="2" y1="17" x2="7" y2="17"></line>
+                            <line x1="17" y1="17" x2="22" y2="17"></line>
+                            <line x1="17" y1="7" x2="22" y2="7"></line>
+                        </svg>
+                        <p style="margin-top: 10px;">Video Stream</p>
+                    </div>
+                    
+
+                    <!-- Chips de preguntas flotantes - COMENTADO TEMPORALMENTE PARA PRUEBAS -->
+                    <!--
+                    <div class="floating-questions" id="floatingQuestions">
+                        <div class="question-chip" onclick="sendPredefinedQuestion('¿Cuál es el propósito del Centro de excelencia de IA?')">
+                            🎯 Propósito del Centro de IA
+                        </div>
+                        <div class="question-chip" onclick="sendPredefinedQuestion('¿Cuales son los actores que participan en la iniciativa del Centro del Excelencia?')">
+                            👥 Actores participantes
+                        </div>
+                        <div class="question-chip" onclick="sendPredefinedQuestion('¿Qué me recomiendas tener en cuenta para asegurar que una iniciativa IA se lleve a cabo con éxito?')">
+                            💡 ¿Cómo asegurar IA con éxito?
+                        </div>
+                    </div>
+                    -->
+
+                    <!-- Botón flotante de audio -->
+                    <div class="floating-audio-button" id="floatingAudioButton">
+                        <button id="floatingRecordBtn" class="floating-record-button" onmousedown="startRecording()" onmouseup="stopRecording()" onmouseleave="stopRecording()" disabled>
+                            🎤
+                        </button>
+                        <div class="floating-audio-status" id="floatingAudioStatus">
+                            Presiona y habla
+                        </div>
+                        <div class="floating-transcription" id="floatingTranscription" style="display: none;">
+                            Transcripción aparecerá aquí...
+                        </div>
+                    </div>
+
+                    <!-- Vignette overlay para integración visual -->
+                    <div class="video-vignette"></div>
+                </div>
+
+                <div class="conversation-section" id="conversationSection">
+                    <div class="conversation-header" onclick="toggleConversationCollapse()">
+                        <h3 class="conversation-title">💬 Transcripción de Conversación</h3>
+                        <span class="conversation-collapse-icon">▼</span>
+                    </div>
+                    <div class="conversation-content" id="conversationContent">
+                        <div id="conversationContainer">
+                            <div class="conversation-placeholder">
+                                <p>La conversación con Guardiana aparecerá aquí...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="controls-section">
+                <!-- PRIMERA SECCIÓN: Enviar Mensaje al Avatar -->
+                <div class="task-section">
+                    <h3>💬 Conversar con Guardiana</h3>
+
+                    <textarea id="taskText" placeholder="Escribe tu mensaje o consulta para Guardiana...">Hola Guardiana, ¿cómo puedes ayudarme?</textarea>
+                    <button id="sendTaskBtn" class="btn-primary" onclick="sendTask()" disabled style="margin-top: 10px; width: 100%;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        Enviar a Guardiana
+                    </button>
+
+                    <!-- Preguntas Sugeridas -->
+                    <div class="suggested-questions-section suggested-collapsed" id="suggestedQuestionsSection" style="margin-top: 12px;">
+                        <div class="suggested-questions-header" onclick="toggleSuggestedQuestionsCollapse()">
+                            <h3 class="suggested-questions-title">💡 Preguntas Sugeridas</h3>
+                            <span class="suggestion-collapse-icon">▼</span>
+                        </div>
+                        <div class="suggested-questions-content">
+                            <div class="questions-grid">
+                                <button class="question-btn" onclick="sendPredefinedQuestion('¿Qué es DevSecOps?')" disabled>
+                                    <span class="question-icon">🔐</span>
+                                    <span class="question-text">¿Qué es DevSecOps?</span>
+                                </button>
+                                <button class="question-btn" onclick="sendPredefinedQuestion('¿Cuál es la diferencia entre DevOps y DevSecOps?')" disabled>
+                                    <span class="question-icon">⚖️</span>
+                                    <span class="question-text">¿Cuál es la diferencia entre DevOps y DevSecOps?</span>
+                                </button>
+                                <button class="question-btn" onclick="sendPredefinedQuestion('¿Qué significa \"shift-left\" en el contexto de DevSecOps?')" disabled>
+                                    <span class="question-icon">⬅️</span>
+                                    <span class="question-text">¿Qué significa "shift-left" en el contexto de DevSecOps?</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- SEGUNDA SECCIÓN: Botones de Control -->
+                <div class="button-group">
+                    <button id="createBtn" class="btn-primary" onclick="createSession()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Crear Sesión
+                    </button>
+                    <button id="closeBtn" class="btn-danger" onclick="closeSession()" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Cerrar Sesión
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración dinámica para local y producción (Vercel)
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE_URL = isLocal ? 'http://localhost:8000' : '';
+        const WS_BASE_URL = isLocal ? 'ws://localhost:8000' : `wss://${window.location.host}`;
+
+        // Variables globales
+        let currentSessionId = null;
+        let ws = null;
+        let peerConnection = null;
+        let remoteStream = null;
+
+        // Variables para control de estado del botón
+        let taskProcessingTimeout = null;
+        let originalButtonText = 'Enviar a Guardiana';
+        
+        // Variables para chroma key
+        let canvas, ctx, animationFrame;
+        let chromaKeyActive = true;
+        let tolerance = 30;
+
+        // Variables para grabación de audio
+        let mediaRecorder = null;
+        let isRecording = false;
+        let audioChunks = [];
+        let currentTranscription = '';
+        let audioStream = null; // Stream persistente para evitar permisos repetidos
+
+        // Configuración de WebRTC
+        const rtcConfig = {
+            iceServers: []
+        };
+
+        // Funciones de logging separadas para conversación y logs técnicos
+        function addConversationEntry(speaker, message, type = 'user') {
+            const conversationContainer = document.getElementById('conversationContainer');
+            const entry = document.createElement('div');
+            entry.className = `conversation-entry ${type}`;
+
+            const timestamp = new Date().toLocaleTimeString('es-CO', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            entry.innerHTML = `
+                <div class="conversation-speaker ${type}">${speaker}:</div>
+                <div class="conversation-message">"${message}"</div>
+                <div class="conversation-time">${timestamp}</div>
+            `;
+
+            conversationContainer.appendChild(entry);
+            conversationContainer.scrollTop = conversationContainer.scrollHeight;
+
+            // Limitar a 100 entradas de conversación
+            while (conversationContainer.children.length > 100) {
+                conversationContainer.removeChild(conversationContainer.firstChild);
+            }
+        }
+
+        // Logs técnicos solo van a consola (con opción de mostrar errores críticos)
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+
+            // Enviar todos los logs a consola del navegador
+            switch(type) {
+                case 'error':
+                    console.error(logMessage);
+                    // Solo errores críticos se muestran como notificación pequeña
+                    if (message.includes('Error') || message.includes('❌')) {
+                        showCriticalError(message);
+                    }
+                    break;
+                case 'success':
+                    console.log(`✅ ${logMessage}`);
+                    break;
+                case 'info':
+                default:
+                    console.log(logMessage);
+                    break;
+            }
+        }
+
+        // Mostrar errores críticos como notificación pequeña y temporal
+        function showCriticalError(message) {
+            const notification = document.createElement('div');
+            notification.className = 'critical-error-notification';
+            notification.textContent = message.replace(/❌|⚠️/, '').trim();
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(239, 68, 68, 0.9);
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 10000;
+                max-width: 300px;
+                word-wrap: break-word;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-remover después de 4 segundos
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 4000);
+        }
+
+        // Ocultar placeholder cuando comience la conversación
+        function hideConversationPlaceholder() {
+            const placeholder = document.querySelector('.conversation-placeholder');
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+        }
+
+        // Actualizar UI
+        function updateUI(state) {
+            const createBtn = document.getElementById('createBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const sendTaskBtn = document.getElementById('sendTaskBtn');
+            const floatingQuestions = document.getElementById('floatingQuestions');
+
+            switch(state) {
+                case 'idle':
+                    createBtn.disabled = false;
+                    closeBtn.disabled = true;
+                    sendTaskBtn.disabled = true;
+                    setQuestionButtonsState(true); // Deshabilitar preguntas
+                    resetCreateButtonState(); // Restaurar botón a estado normal
+                    if (floatingQuestions) floatingQuestions.classList.remove('active'); // Ocultar chips flotantes
+                    break;
+                case 'creating_session':
+                    setCreateButtonProcessing(); // Mostrar feedback inmediato
+                    closeBtn.disabled = true;
+                    sendTaskBtn.disabled = true;
+                    setQuestionButtonsState(true); // Deshabilitar preguntas
+                    if (floatingQuestions) floatingQuestions.classList.remove('active');
+                    break;
+                case 'session_created':
+                    resetCreateButtonState(true); // Restaurar contenido visual pero mantener deshabilitado
+                    closeBtn.disabled = false;
+                    sendTaskBtn.disabled = true;
+                    setQuestionButtonsState(true); // Deshabilitar preguntas
+                    if (floatingQuestions) floatingQuestions.classList.remove('active');
+                    break;
+                case 'connected':
+                    resetCreateButtonState(true); // Restaurar contenido visual pero mantener deshabilitado
+                    closeBtn.disabled = false;
+                    sendTaskBtn.disabled = false;
+                    setQuestionButtonsState(false); // Habilitar preguntas
+                    if (floatingQuestions) floatingQuestions.classList.add('active'); // Mostrar chips flotantes
+                    break;
+            }
+
+            // Actualizar botones de audio también
+            updateAudioButtonStates();
+        }
+
+        // Habilitar/Deshabilitar botones de preguntas sugeridas
+        function setQuestionButtonsState(disabled) {
+            const questionButtons = document.querySelectorAll('.question-btn');
+            questionButtons.forEach(btn => {
+                btn.disabled = disabled;
+            });
+        }
+
+        // Funciones para manejar el estado del botón "Crear Sesión"
+        function setCreateButtonProcessing() {
+            const createBtn = document.getElementById('createBtn');
+
+            createBtn.disabled = true;
+            createBtn.classList.add('btn-processing');
+            createBtn.innerHTML = `
+                <div class="loading"></div>
+                Creando Sesión...
+            `;
+        }
+
+        function resetCreateButtonState(keepDisabled = false) {
+            const createBtn = document.getElementById('createBtn');
+
+            createBtn.disabled = keepDisabled;
+            createBtn.classList.remove('btn-processing');
+            createBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Crear Sesión
+            `;
+        }
+
+        // Funciones para manejar estados del botón de envío
+        function setButtonProcessing(message = 'Enviando...') {
+            const sendTaskBtn = document.getElementById('sendTaskBtn');
+
+            sendTaskBtn.disabled = true;
+            sendTaskBtn.classList.add('btn-processing');
+            sendTaskBtn.innerHTML = `
+                <div class="loading"></div>
+                ${message}
+            `;
+
+            // Deshabilitar también los botones de preguntas durante el procesamiento
+            setQuestionButtonsState(true);
+
+            // Timeout de seguridad para re-habilitar botón
+            if (taskProcessingTimeout) {
+                clearTimeout(taskProcessingTimeout);
+            }
+            taskProcessingTimeout = setTimeout(() => {
+                resetButtonState();
+                addLog('⚠️ Timeout procesando mensaje - botón re-habilitado', 'info');
+            }, 30000); // 30 segundos
+        }
+
+        function resetButtonState() {
+            const sendTaskBtn = document.getElementById('sendTaskBtn');
+
+            sendTaskBtn.disabled = false;
+            sendTaskBtn.classList.remove('btn-processing');
+            sendTaskBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                ${originalButtonText}
+            `;
+
+            // Re-habilitar botones de preguntas si hay conexión activa
+            if (ws && ws.readyState === WebSocket.OPEN && currentSessionId) {
+                setQuestionButtonsState(false);
+            }
+
+            if (taskProcessingTimeout) {
+                clearTimeout(taskProcessingTimeout);
+                taskProcessingTimeout = null;
+            }
+        }
+
+        // Conectar el video usando las credenciales del avatar
+        async function startRtcConnection(data) {
+            if (peerConnection) {
+                addLog("Cerrando conexión WebRTC existente.", 'info');
+                peerConnection.close();
+            }
+            
+            addLog("Iniciando conexión de video...", 'info');
+            
+            const { livekit_url, livekit_token } = data;
+            
+            if (!livekit_url || !livekit_token) {
+                addLog("Faltan credenciales de video en la respuesta.", 'error');
+                return;
+            }
+            
+            try {
+                // Importar LiveKit desde CDN si no está disponible
+                if (typeof LivekitClient === 'undefined') {
+                addLog("Cargando SDK de video...", 'info');
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/livekit-client@2.15.6/dist/livekit-client.umd.js';
+                    document.head.appendChild(script);
+                    
+                    await new Promise((resolve, reject) => {
+                        script.onload = resolve;
+                        script.onerror = (error) => {
+                            addLog("Error cargando SDK desde unpkg, intentando con jsDelivr...", 'error');
+                            // Fallback a jsDelivr
+                            const fallbackScript = document.createElement('script');
+                            fallbackScript.src = 'https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.js';
+                            document.head.appendChild(fallbackScript);
+                            fallbackScript.onload = resolve;
+                            fallbackScript.onerror = reject;
+                        };
+                    });
+                }
+                
+                // Crear conexión de video
+                const room = new LivekitClient.Room();
+                
+                // Configurar event listeners
+                room.on(LivekitClient.RoomEvent.Connected, () => {
+                    addLog("✅ Conexión de video establecida", 'success');
+                    updateUI('connected');
+                });
+                
+                room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+                    if (track.kind === LivekitClient.Track.Kind.Video) {
+                        addLog("✅ Stream de video de Guardiana recibido.", 'success');
+                        const element = track.attach();
+                        const remoteVideo = document.getElementById('remoteVideo');
+                        remoteVideo.srcObject = element.srcObject;
+                        document.getElementById('videoPlaceholder').style.display = 'none';
+                        
+                        // Asegurar que el audio se reproduzca
+                        remoteVideo.muted = false;
+                        remoteVideo.play().catch(e => {
+                            addLog("Reproducción automática bloqueada. Haz clic en el video para activar el audio.", 'info');
+                        });
+
+                        // Mostrar video original sin chroma key (chroma key no funciona para este avatar)
+                        setTimeout(() => {
+                            showOriginalVideo();
+                        }, 500);
+                    }
+                    
+                    if (track.kind === LivekitClient.Track.Kind.Audio) {
+                        addLog("✅ Stream de audio de Guardiana recibido.", 'success');
+                        const element = track.attach();
+                        const remoteVideo = document.getElementById('remoteVideo');
+                        // Para audio, necesitamos asegurar que el video element pueda reproducir audio
+                        if (remoteVideo.srcObject) {
+                            // El audio ya está en el stream de video
+                            remoteVideo.muted = false;
+                        } else {
+                            // Si hay un track de audio separado, lo agregamos
+                            document.body.appendChild(element);
+                            element.play().catch(e => {
+                                addLog("Error reproduciendo audio: " + e.message, 'error');
+                            });
+                        }
+                    }
+                });
+                
+                room.on(LivekitClient.RoomEvent.Disconnected, () => {
+                    addLog("Conexión de video cerrada", 'info');
+                    // Solo actualizar UI si no es un cierre intencional
+                    // (currentSessionId será null si cleanup() ya se ejecutó)
+                    if (currentSessionId !== null) {
+                        updateUI('session_created');
+                    }
+                });
+                
+                // Conectar al room
+                await room.connect(livekit_url, livekit_token);
+                
+            } catch (error) {
+                addLog(`Error en conexión de video: ${error.message}`, 'error');
+            }
+        }
+    
+    /**
+     * Función principal que se llama al hacer clic en el botón.
+     * Crea la sesión y luego inicia la conexión WebSocket.
+     */
+    async function createAndConnectSession() {
+        // Mostrar feedback inmediato antes de cualquier validación
+        updateUI('creating_session');
+
+        if (currentSessionId) {
+            addLog("Ya existe una sesión activa.", 'info');
+            updateUI('idle'); // Restaurar estado si ya hay sesión
+            return;
+        }
+
+        addLog("Creando nueva sesión con Guardiana...", 'info');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/sessions/create`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({}) // Puedes añadir configuración aquí si quieres
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `Error del servidor: ${response.status}`);
+            }
+
+            const data = await response.json();
+            currentSessionId = data.session_id;
+
+            addLog(`✅ Sesión creada con éxito: ${currentSessionId}`, 'success');
+            updateUI('session_created');
+
+            // Pequeño delay antes de conectar WebSocket para asegurar que la sesión esté almacenada
+            addLog('Esperando que la sesión se almacene en el backend...', 'info');
+            setTimeout(() => {
+                connectWebSocket();
+            }, 1000); // 1 segundo de delay
+            
+            // Agregar event listener para click en video para unmute (por si acaso)
+            const remoteVideo = document.getElementById('remoteVideo');
+            remoteVideo.addEventListener('click', () => {
+                if (remoteVideo.muted) {
+                    remoteVideo.muted = false;
+                    addLog("Audio activado por interacción del usuario", 'success');
+                }
+            });
+
+        } catch (error) {
+            addLog(`Error al crear la sesión: ${error.message}`, 'error');
+            updateUI('idle'); // Restaurar estado del botón en caso de error
+        }
+    }
+
+    /**
+     * Inicia la conexión WebSocket con retry automático.
+     */
+    function connectWebSocket(retryCount = 0, maxRetries = 3) {
+        if (!currentSessionId) {
+            addLog("No hay ID de sesión para conectar el WebSocket.", 'error');
+            return;
+        }
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            addLog("WebSocket ya está conectado.", 'info');
+            return;
+        }
+
+        const attempt = retryCount + 1;
+        addLog(`Conectando WebSocket a ${WS_BASE_URL}/ws/${currentSessionId} (intento ${attempt}/${maxRetries + 1})`, 'info');
+        ws = new WebSocket(`${WS_BASE_URL}/ws/${currentSessionId}`);
+
+        ws.onopen = () => {
+            addLog("✅ WebSocket conectado.", 'success');
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+
+            if (message.type === 'session_info') {
+                // Iniciar WebRTC cuando recibimos la información de la sesión
+                startRtcConnection(message.data);
+                addLog(`Información de sesión recibida`, 'info');
+            } else if (message.type === 'processing') {
+                // Mostrar estado de procesamiento de OpenAI (solo log técnico)
+                addLog(`🤖 ${message.message}`, 'info');
+                setButtonProcessing('Procesando con Guardiana...');
+            } else if (message.type === 'task_sent') {
+                // Registrar solo la respuesta de Guardiana (el usuario ya se agregó en sendTask)
+                if (message.openai_response) {
+                    // Agregar respuesta de Guardiana
+                    addConversationEntry('Guardiana', message.openai_response, 'assistant');
+                }
+
+                // Log técnico solo a consola
+                addLog(`✅ ${message.message}`, 'success');
+
+                // Re-habilitar botón cuando la tarea se complete
+                resetButtonState();
+            } else if (message.type === 'error') {
+                addLog(`❌ ${message.message}`, 'error');
+                // Re-habilitar botón en caso de error
+                resetButtonState();
+            } else {
+                addLog(`📨 ${message.type}: ${message.message || 'Sin mensaje'}`, 'info');
+            }
+        };
+
+        ws.onclose = (event) => {
+            addLog(`WebSocket desconectado. Código: ${event.code}, Razón: ${event.reason}`, 'info');
+
+            // Si fue cerrado con error 403/1008 y tenemos retries disponibles
+            if ((event.code === 1008 || event.code === 403) && retryCount < maxRetries) {
+                const retryDelay = Math.pow(2, retryCount) * 1000; // Backoff exponencial: 1s, 2s, 4s
+                addLog(`Reintentando conexión WebSocket en ${retryDelay/1000} segundos...`, 'info');
+
+                setTimeout(() => {
+                    connectWebSocket(retryCount + 1, maxRetries);
+                }, retryDelay);
+            } else {
+                // Reset button state when connection is lost definitively
+                resetButtonState();
+                if (retryCount >= maxRetries) {
+                    addLog(`❌ Falló conexión WebSocket después de ${maxRetries + 1} intentos`, 'error');
+                }
+            }
+        };
+
+        ws.onerror = (error) => {
+            addLog(`Error de WebSocket: ${error.message || 'Error desconocido'}`, 'error');
+        };
+    }
+
+
+        // Enviar tarea
+        function sendTask() {
+            const taskText = document.getElementById('taskText').value.trim();
+
+            if (!taskText) {
+                addLog('El texto no puede estar vacío', 'error');
+                return;
+            }
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('WebSocket no conectado', 'error');
+                return;
+            }
+
+            // Mostrar mensaje del usuario inmediatamente en la transcripción
+            hideConversationPlaceholder();
+            addConversationEntry('Usuario', taskText, 'user');
+
+            // Deshabilitar botón y mostrar estado de envío
+            setButtonProcessing('Enviando...');
+
+            ws.send(JSON.stringify({
+                type: 'task',
+                text: taskText
+            }));
+
+            // Log técnico a consola
+            addLog(`📤 Enviando mensaje: "${taskText.substring(0, 50)}..."`, 'info');
+
+            // Limpiar textarea después de enviar
+            document.getElementById('taskText').value = '';
+        }
+
+        // Enviar pregunta predefinida
+        function sendPredefinedQuestion(question) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('WebSocket no conectado', 'error');
+                return;
+            }
+
+            // Mostrar pregunta del usuario inmediatamente en la transcripción
+            hideConversationPlaceholder();
+            addConversationEntry('Usuario', question, 'user');
+
+            // Deshabilitar botones y mostrar estado de envío
+            setButtonProcessing('Enviando...');
+            setQuestionButtonsState(true); // Deshabilitar botones de preguntas
+
+            ws.send(JSON.stringify({
+                type: 'task',
+                text: question
+            }));
+
+            // Log técnico a consola
+            addLog(`📤 Enviando pregunta predefinida: "${question.substring(0, 50)}..."`, 'info');
+        }
+
+        // Cerrar sesión
+        async function closeSession() {
+            if (!currentSessionId) return;
+
+            try {
+                addLog('Cerrando sesión...', 'info');
+
+                // Llamar al endpoint de cierre en el backend
+                const response = await fetch(`${API_BASE_URL}/api/sessions/${currentSessionId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    addLog('Sesión cerrada en el backend', 'success');
+                } else {
+                    addLog(`Advertencia: Respuesta del servidor al cerrar: ${response.status}`, 'info');
+                }
+
+            } catch (error) {
+                addLog(`Error al cerrar sesión: ${error.message}`, 'error');
+            } finally {
+                // Siempre limpiar recursos localmente
+                cleanup();
+            }
+        }
+
+        // Limpiar recursos
+        function cleanup() {
+            // Resetear estado PRIMERO para que event handlers sepan que es un cierre intencional
+            currentSessionId = null;
+
+            // Detener procesamiento de chroma key
+            chromaKeyActive = false;
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+
+            // Cerrar conexiones
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+
+            // Limpiar stream de audio persistente
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+                audioStream = null;
+            }
+
+            // Limpiar todos los elementos de video
+            const remoteVideo = document.getElementById('remoteVideo');
+            const displayVideo = document.getElementById('displayVideo');
+            const canvas = document.getElementById('videoCanvas');
+
+            // Pausar y limpiar streams de video
+            if (remoteVideo.srcObject) {
+                const tracks = remoteVideo.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                remoteVideo.srcObject = null;
+            }
+
+            if (displayVideo.srcObject) {
+                const tracks = displayVideo.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                displayVideo.srcObject = null;
+            }
+
+            // Pausar videos para asegurar que no muestren el último frame
+            remoteVideo.pause();
+            displayVideo.pause();
+
+            // Limpiar canvas
+            if (canvas && ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Ocultar todos los elementos de video y mostrar placeholder
+            remoteVideo.style.display = 'none';
+            displayVideo.style.display = 'none';
+            canvas.style.display = 'none';
+            document.getElementById('videoPlaceholder').style.display = 'block';
+
+            // Resetear estado del botón
+            resetButtonState();
+
+            updateUI('idle');
+
+            addLog('✅ Recursos limpiados correctamente', 'success');
+        }
+
+
+        // Variables para optimización de rendimiento
+        let frameCount = 0;
+        let lastTime = performance.now();
+        let fps = 0;
+
+        // Función optimizada de chroma key que procesa cada frame
+        function processChromaKey() {
+            if (!canvas || !ctx || !chromaKeyActive) return;
+            
+            const video = document.getElementById('remoteVideo');
+            if (!video.videoWidth || !video.videoHeight) return;
+            
+            // Optimización: procesar solo cada 2-3 frames para mejor rendimiento
+            frameCount++;
+            if (frameCount % 2 !== 0) {
+                animationFrame = requestAnimationFrame(processChromaKey);
+                return;
+            }
+            
+            // Calcular FPS
+            const currentTime = performance.now();
+            if (currentTime - lastTime > 1000) {
+                fps = Math.round(frameCount / ((currentTime - lastTime) / 1000));
+                lastTime = currentTime;
+                frameCount = 0;
+            }
+            
+            // Ajustar tamaño del canvas al video (solo si cambió)
+            if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                addLog(`Canvas redimensionado: ${canvas.width}x${canvas.height}`, 'info');
+            }
+            
+            // Dibujar frame actual del video
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            try {
+                // Obtener datos de píxeles
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                // Procesar cada píxel para chroma key (optimizado)
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    // Algoritmo de detección de verde mejorado
+                    const greenDominance = g - Math.max(r, b);
+                    const isChromaKey = greenDominance > tolerance && g > 80;
+
+                    if (isChromaKey) {
+                        // Reemplazar con fondo elegante (gradiente suave)
+                        const pixelIndex = i / 4;
+                        const y = Math.floor(pixelIndex / canvas.width);
+                        const x = pixelIndex % canvas.width;
+
+                        // Gradiente diagonal
+                        const gradientFactor = (y + x * 0.3) / (canvas.height + canvas.width * 0.3);
+
+                        data[i] = Math.floor(20 + gradientFactor * 40);     // R (más rosa)
+                        data[i + 1] = Math.floor(5 + gradientFactor * 15);  // G (menos verde)
+                        data[i + 2] = Math.floor(30 + gradientFactor * 50); // B (cyan/azul)
+                        // Alpha se mantiene igual para preservar transparencia
+                    }
+                }
+                
+                // Aplicar píxeles procesados
+                ctx.putImageData(imageData, 0, 0);
+                
+            } catch (error) {
+                addLog(`Error en procesamiento chroma key: ${error.message}`, 'error');
+                // Fallback: mostrar video original
+                chromaKeyActive = false;
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+                const canvas = document.getElementById('videoCanvas');
+                const displayVideo = document.getElementById('displayVideo');
+                const remoteVideo = document.getElementById('remoteVideo');
+                canvas.style.display = 'none';
+                displayVideo.style.display = 'block';
+                displayVideo.srcObject = remoteVideo.srcObject;
+                addLog("Usando video original debido a error en chroma key", 'info');
+                return;
+            }
+            
+            // Continuar procesamiento
+            if (chromaKeyActive) {
+                animationFrame = requestAnimationFrame(processChromaKey);
+            }
+        }
+        
+        // Inicializar sistema de chroma key con detección de soporte
+        function initChromaKey() {
+            canvas = document.getElementById('videoCanvas');
+
+            // Verificar soporte de Canvas
+            if (!canvas || !canvas.getContext) {
+                addLog("Canvas no soportado. Usando video original.", 'error');
+                return false;
+            }
+
+            ctx = canvas.getContext('2d');
+            if (!ctx) {
+                addLog("Context 2D no disponible. Usando video original.", 'error');
+                return false;
+            }
+
+            // Verificar soporte de ImageData
+            try {
+                const testData = ctx.createImageData(1, 1);
+                if (!testData) throw new Error("ImageData no disponible");
+            } catch (e) {
+                addLog("ImageData no soportado. Usando video original.", 'error');
+                return false;
+            }
+
+            // Establecer tolerancia fija optimizada
+            tolerance = 30;
+
+            addLog("✅ Sistema de chroma key inicializado correctamente", 'success');
+            return true;
+        }
+        
+        // Activar chroma key automáticamente
+        function activateChromaKey() {
+            const canvas = document.getElementById('videoCanvas');
+            const displayVideo = document.getElementById('displayVideo');
+
+            // Intentar inicializar chroma key
+            if (!ctx && !initChromaKey()) {
+                // Fallback: usar video original si canvas falla
+                addLog("Canvas no disponible, usando video original", 'info');
+                displayVideo.style.display = 'block';
+                const remoteVideo = document.getElementById('remoteVideo');
+                displayVideo.srcObject = remoteVideo.srcObject;
+                return;
+            }
+
+            // Activar modo chroma key
+            chromaKeyActive = true;
+            displayVideo.style.display = 'none';
+            canvas.style.display = 'block';
+
+            // Iniciar procesamiento
+            processChromaKey();
+            addLog("✅ Chroma key activado automáticamente", 'success');
+        }
+
+        // Mostrar video original sin chroma key (para avatar con fondo gris/beige)
+        function showOriginalVideo() {
+            const displayVideo = document.getElementById('displayVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
+            const canvas = document.getElementById('videoCanvas');
+
+            // Desactivar procesamiento de chroma key si estaba activo
+            chromaKeyActive = false;
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+
+            // Ocultar canvas
+            canvas.style.display = 'none';
+
+            // Mostrar video original con vignette overlay
+            displayVideo.srcObject = remoteVideo.srcObject;
+            displayVideo.style.display = 'block';
+            displayVideo.muted = false;
+
+            // Asegurar reproducción
+            displayVideo.play().catch(e => {
+                addLog("Error reproduciendo video: " + e.message, 'info');
+            });
+
+            addLog("✅ Video original activado con vignette elegante", 'success');
+        }
+
+        // Manejar Enter en el textarea
+        document.getElementById('taskText').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                sendTask();
+            }
+        });
+        // Cambiar la llamada onclick del botón "Crear Sesión"
+        document.getElementById('createBtn').onclick = createAndConnectSession;
+
+        // ===== FUNCIONES PARA MANEJO DE AUDIO =====
+
+        // Cambiar entre modos de entrada (texto/audio)
+        function switchInputMode(mode) {
+            const textTab = document.getElementById('textTab');
+            const audioTab = document.getElementById('audioTab');
+            const textPanel = document.getElementById('textPanel');
+            const audioPanel = document.getElementById('audioPanel');
+
+            // Actualizar tabs
+            textTab.classList.toggle('active', mode === 'text');
+            audioTab.classList.toggle('active', mode === 'audio');
+
+            // Actualizar paneles
+            textPanel.classList.toggle('active', mode === 'text');
+            audioPanel.classList.toggle('active', mode === 'audio');
+
+            // Actualizar estado de botones según el modo
+            updateAudioButtonStates();
+            
+            addLog(`Modo de entrada cambiado a: ${mode}`, 'info');
+        }
+
+        // Actualizar estado de botones de audio
+        function updateAudioButtonStates() {
+            const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+            const floatingAudioButton = document.getElementById('floatingAudioButton');
+
+            // Habilitar grabación solo si hay sesión activa y stream disponible
+            const sessionActive = currentSessionId && ws && ws.readyState === WebSocket.OPEN && audioStream;
+            floatingRecordBtn.disabled = !sessionActive;
+
+            // Mostrar/ocultar el botón flotante según el estado de la sesión
+            if (sessionActive) {
+                floatingAudioButton.classList.add('active');
+            } else {
+                floatingAudioButton.classList.remove('active');
+            }
+        }
+
+        // Inicializar acceso al micrófono
+        async function initializeAudio() {
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { 
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+                addLog('✅ Acceso al micrófono concedido - stream persistente creado', 'success');
+                return true;
+            } catch (error) {
+                addLog(`❌ Error accediendo al micrófono: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Iniciar grabación
+        async function startRecording() {
+            if (isRecording || !currentSessionId || !audioStream) return;
+            
+            try {
+                audioChunks = [];
+                mediaRecorder = new MediaRecorder(audioStream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    await processRecording();
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                
+                // Actualizar UI
+                const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+                const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+                floatingRecordBtn.classList.add('recording');
+                floatingAudioStatus.textContent = '🔴 Grabando...';
+                
+                addLog('🎤 Iniciada grabación de audio (usando stream persistente)', 'info');
+                
+            } catch (error) {
+                addLog(`Error iniciando grabación: ${error.message}`, 'error');
+                isRecording = false;
+            }
+        }
+
+        // Detener grabación
+        function stopRecording() {
+            if (!isRecording || !mediaRecorder) return;
+            
+            mediaRecorder.stop();
+            isRecording = false;
+            
+            // Actualizar UI
+            const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+            const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+            floatingRecordBtn.classList.remove('recording');
+            floatingAudioStatus.textContent = '🔄 Procesando...';
+        }
+
+        // Procesar grabación y enviar a STT
+        async function processRecording() {
+            if (audioChunks.length === 0) {
+                addLog('No se grabó audio', 'error');
+                document.getElementById('floatingAudioStatus').textContent = 'Presiona y habla';
+                return;
+            }
+
+            try {
+                // Crear blob de audio
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                
+                // Crear FormData para enviar al servidor
+                const formData = new FormData();
+                formData.append('audio_file', audioBlob, 'recording.webm');
+                
+                // Enviar a endpoint STT
+                addLog('📤 Enviando audio para transcripción...', 'info');
+                const response = await fetch(`${API_BASE_URL}/api/stt/transcribe`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Error en transcripción');
+                }
+                
+                const result = await response.json();
+                currentTranscription = result.transcription;
+                
+                // Mostrar transcripción en el botón flotante
+                const floatingTranscription = document.getElementById('floatingTranscription');
+                const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+                floatingTranscription.textContent = `"${currentTranscription}"`;
+                floatingTranscription.style.display = 'block';
+
+                floatingAudioStatus.textContent = '✅ Transcrito';
+                updateAudioButtonStates();
+                
+                addLog(`✅ Audio transcrito: "${currentTranscription}"`, 'success');
+                addLog(`Confianza: ${(result.confidence * 100).toFixed(1)}% | Duración: ${result.duration.toFixed(1)}s`, 'info');
+                
+                // Envío automático del texto transcrito
+                setTimeout(() => {
+                    sendTranscribedTextAutomatically();
+                }, 500); // Pequeño delay para mostrar la transcripción
+                
+            } catch (error) {
+                addLog(`Error en transcripción: ${error.message}`, 'error');
+                document.getElementById('floatingAudioStatus').textContent = '❌ Error audio';
+                currentTranscription = '';
+                updateAudioButtonStates();
+            }
+        }
+
+        // Enviar texto transcrito automáticamente
+        function sendTranscribedTextAutomatically() {
+            if (!currentTranscription || !ws || ws.readyState !== WebSocket.OPEN) {
+                addLog('❌ No se puede enviar transcripción - WebSocket no conectado', 'error');
+                document.getElementById('floatingAudioStatus').textContent = '❌ Sin conexión';
+                return;
+            }
+
+            // Mostrar mensaje del usuario inmediatamente en la transcripción
+            hideConversationPlaceholder();
+            addConversationEntry('Usuario', currentTranscription, 'user');
+
+            ws.send(JSON.stringify({
+                type: 'task',
+                text: currentTranscription
+            }));
+
+            // Log técnico a consola
+            addLog(`📤 Enviando automáticamente: "${currentTranscription}"`, 'info');
+            document.getElementById('floatingAudioStatus').textContent = '📤 Enviado';
+
+            // Limpiar transcripción después de enviar
+            setTimeout(() => {
+                currentTranscription = '';
+                const floatingTranscription = document.getElementById('floatingTranscription');
+                const floatingAudioStatus = document.getElementById('floatingAudioStatus');
+                floatingTranscription.style.display = 'none';
+                floatingTranscription.textContent = 'Transcripción aparecerá aquí...';
+                floatingAudioStatus.textContent = 'Presiona y habla';
+                updateAudioButtonStates();
+            }, 2000); // Más tiempo para ver el feedback
+        }
+
+        // Enviar texto transcrito como tarea (función manual - mantener por compatibilidad)
+        function sendTranscribedText() {
+            sendTranscribedTextAutomatically();
+        }
+
+        // Inicialización
+        window.addEventListener('load', async () => {
+            addLog('Cliente Guardiana iniciado', 'success');
+            updateUI('idle');
+            
+            // Solicitar acceso al micrófono para funcionalidad de audio
+            const audioAvailable = await initializeAudio();
+            if (audioAvailable) {
+                addLog('🎤 Funcionalidad de audio habilitada', 'info');
+            } else {
+                addLog('⚠️ Micrófono no disponible - solo modo texto', 'info');
+            }
+        });
+
+        // Función para colapsar/expandir conversación
+        function toggleConversationCollapse() {
+            const section = document.getElementById('conversationSection');
+            section.classList.toggle('conversation-collapsed');
+        }
+
+        // Función para colapsar/expandir preguntas sugeridas
+        function toggleSuggestedQuestionsCollapse() {
+            const section = document.getElementById('suggestedQuestionsSection');
+            section.classList.toggle('suggested-collapsed');
+        }
+
+        // Limpiar al cerrar la ventana
+        window.addEventListener('beforeunload', () => {
+            cleanup();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+websockets
+requests
+pydantic
+python-multipart
+aiofiles
+deepgram-sdk<5.0.0
+openai
+python-dotenv
